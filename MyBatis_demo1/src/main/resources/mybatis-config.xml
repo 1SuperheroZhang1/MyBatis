@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+    <!--
+        MyBatis核心配置文件中，标签的顺序：
+            properties?,settings?,typeAliases?,typeHandlers?,
+            objectFactory?,objectWrapperFactory?,reflectorFactory?,
+            plugins?,environments?,databaseIdProvider?,mappers?
+    -->
+    <!-- 引入properties文件，此时就可以使用${属性名}的方式访问属性值 -->
+    <properties resource="jdbc.properties"></properties>
+
+    <!-- 设置类型的别名 - 类型别名不区分大小写 -->
+    <typeAliases>
+        <!--
+            typeAlias：设置某个具体的类型的别名
+            属性：
+                type：需要设置别名的类型的全类名
+                alias：设置此类型的别名，若不设置该属性，该类型拥有默认的别名，即类名且不区分大小写。
+                       若设置此属性，此时该类型的别名只能使用alias所设置的值
+        -->
+<!--        <typeAlias type="com.atguigu.mybatis.pojo.User" alias="User"></typeAlias>-->
+        <!-- 以包为单位，设置该包下所有的类型都有默认的别名，即类名且不区分大小写 -->
+        <package name="com.atguigu.mybatis.pojo"/>
+    </typeAliases>
+
+    <!--
+            environments：配置多个连接数据库的环境
+            属性：
+                default：设置默认使用的环境的id
+    -->
+    <environments default="development">
+        <!--
+            environment：设置具体的连接数据库的环境信息
+            属性：
+                id：表示连接数据库的环境的唯一标识，不能重复。
+                可通过environments标签中的default设置某一个环境的id,表示默认使用的环境
+        -->
+        <environment id="development">
+            <!--
+                transactionManager：设置事务管理方式
+                属性：
+                    type="JDBC|MANAGED"
+                    JDBC: 表示当前环境中，执行SQL时，使用的是JDBC中原生的事务管理方式，事物的提交或回滚需要手动处理
+                    MANAGED: 被管理，例如Spring中的AOP
+             -->
+            <transactionManager type="JDBC"/>
+                <!--
+                   dataSource：配置数据源
+                   属性：
+                    type：设置数据源的类型
+                    type="POOLED|UNPOOLED|JNDI"
+                    POOLED: 表示使用数据库连接池,即会将创建的连接进入缓存，下次使用可以从缓存中直接获取，不需要重新创建
+                    UNPOOLED: 表示不使用数据库连接池，即每次使用连接都需要重新创建
+                    JNDI: 表示使用上下文中的数据源
+                -->
+            <dataSource type="POOLED">
+                <!-- 设置连接数据库的驱动 -->
+                <property name="driver" value="${jdbc.driver}"/>
+                <!-- 设置连接数据库的连接地址 -->
+                <property name="url" value="${jdbc.url}"/>
+                <!-- 设置连接数据库的用户名 -->
+                <property name="username" value="${jdbc.username}"/>
+                <!-- 设置连接数据库的密码 -->
+                <property name="password" value="${jdbc.password}"/>
+            </dataSource>
+        </environment>
+    </environments>
+    <!-- 引入映射文件 -->
+    <mappers>
+<!--        <mapper resource="mappers/UserMapper.xml"/>-->
+        <!--
+            以包为单位，将包下所有的映射文件引入核心配置文件
+            要求：
+               1、mapper接口所在的包要和映射文件所在的包一致
+               2、mapper接口要和映射文件的名字一致
+        -->
+        <package name="com.atguigu.mybatis.mapper"/>
+    </mappers>
+</configuration>
